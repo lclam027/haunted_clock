@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Haunted Chinese Clock</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #3d0101; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: serif;
+        }
+
+        .clock-frame {
+            position: relative;
+            width: 85vmin; 
+            height: 85vmin;
+            background-color: #1a1a1a; 
+            border-radius: 50%; 
+            box-shadow: 0 0 100px rgba(0,0,0,0.9), inset 0 0 40px #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 12px solid #2a2a2a;
+        }
+
+        .clock-image {
+            width: 95%;
+            height: 95%;
+            object-fit: contain;
+            border-radius: 50%;
+            z-index: 1;
+            opacity: 0.9;
+            filter: sepia(0.4) contrast(1.2) brightness(0.7);
+        }
+
+        /* Needle Layers */
+        .needle-wrapper {
+            position: absolute;
+            z-index: 5;
+            top: 50%;
+            left: 50%;
+            transform-origin: center center;
+            pointer-events: none;
+        }
+
+        /* Long Needle (Minute) */
+        #long-needle {
+            width: 8vmin; /* Slightly thinner */
+            transition: transform 0.05s ease-out;
+        }
+
+        /* Short Needle (Hour) */
+        #short-needle {
+            width: 9vmin; /* Significantly thinner profile */
+            z-index: 6; 
+            transition: transform 0.07s ease-out;
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 0 8px rgba(0,0,0,0.8));
+        }
+
+        .vignette {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9) 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="vignette"></div>
+
+    <div class="clock-frame">
+        <img src="chinese_clock.png" alt="Chinese Clock Face" class="clock-image">
+        
+        <div id="long-needle" class="needle-wrapper">
+            <svg viewBox="0 0 100 600" xmlns="http://www.w3.org/2000/svg">
+                <g transform="translate(50, 300)">
+                    <path d="M 0 -290 C -2 -290, -4 -260, -4 -240 L -4 0 C -4 8, -3 12, 0 12 C 3 12, 4 8, 4 0 L 4 -240 C 4 -260, 2 -290, 0 -290 Z" 
+                          fill="#1a120a" stroke="#4d3b1a" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="7" fill="#1a120a" stroke="#8c6d31" stroke-width="1.5"/>
+                </g>
+            </svg>
+        </div>
+
+        <div id="short-needle" class="needle-wrapper">
+            <svg viewBox="0 0 100 400" xmlns="http://www.w3.org/2000/svg">
+                <g transform="translate(50, 200)">
+                    <path d="M 0 -170 C -3 -170, -6 -150, -7 -130 L -8 0 C -8 10, -5 15, 0 15 C 5 15, 8 10, 8 0 L 7 -130 C 6 -150, 3 -170, 0 -170 Z" 
+                          fill="#2a1f14" stroke="#1a120a" stroke-width="1"/>
+                    <path d="M 0 -8 C -10 -20, -18 -5, -8 10 C -4 14, 4 14, 8 10 C 18 -5, 10 -20, 0 -8 Z" 
+                          fill="#8c6d31" opacity="0.6"/>
+                    <circle cx="0" cy="0" r="9" fill="#1a120a" stroke="#cda972" stroke-width="1.5"/>
+                    <circle cx="0" cy="0" r="2.5" fill="#3e3223" /> 
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        const longNeedle = document.getElementById('long-needle');
+        const shortNeedle = document.getElementById('short-needle');
+        
+        let longAngle = 180;
+        let shortAngle = 0; 
+
+        function updateHaunting() {
+            // Erratic shivers
+            const longJitter = (Math.random() - 0.5) * 55;
+            const shortJitter = (Math.random() - 0.5) * 35;
+            
+            // Ghostly swaying
+            const longPulse = Math.sin(Date.now() / 700) * 18;
+            const shortPulse = Math.cos(Date.now() / 1100) * 12;
+
+            longNeedle.style.transform = `translate(-50%, -50%) rotate(${longAngle + longJitter + longPulse}deg)`;
+            shortNeedle.style.transform = `translate(-50%, -50%) rotate(${shortAngle + shortJitter + shortPulse}deg)`;
+            
+            // Random interval for a "broken" feel
+            setTimeout(updateHaunting, Math.random() * 50 + 40);
+        }
+
+        updateHaunting();
+    </script>
+</body>
+</html>
